@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, redirect } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 
 // https://uibakery.io/regex-library/phone-number
@@ -33,7 +33,12 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
-  const [withPriority, setWithPriority] = useState(false);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
+  const formError = useActionData();
+
+  // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
 
   return (
@@ -51,6 +56,7 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
+          {formError?.phone && <p className="error">{formError.phone}</p>}
         </div>
 
         <div>
@@ -65,15 +71,17 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            value={withPriority}
-            onChange={(e) => setWithPriority(e.target.checked)}
+            // value={withPriority}
+            // onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor="priority">Want to yo give your order priority?</label>
         </div>
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Placing order..." : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -89,6 +97,14 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === "on",
   };
+
+  const error = {};
+
+  if (!isValidPhone(order.phone))
+    error.phone =
+      "Please enter a valid phone number, we might need to call you about your order!";
+
+  if (Object.keys(error).length > 0) return error;
 
   const newOrder = await createOrder(order);
 
