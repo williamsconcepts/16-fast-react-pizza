@@ -12,7 +12,6 @@ function AppLayout() {
       <Header />
 
       <main>
-        <h1>Welcome to Fast React Pizza Co.</h1>
         <Outlet />
       </main>
 
