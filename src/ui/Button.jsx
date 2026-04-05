@@ -1,20 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-function Button({ children, disabled, to }) {
+function Button({ children, disabled, to, type }) {
+  const base =
+    'inline-block rounded-full bg-yellow-400 font-semibold uppercase tracking-wide text-stone-800 ring-2 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 focus:ring-offset-2 disabled:cursor-not-allowed';
 
-    const className = "inline-block rounded-full bg-yellow-400 px-4 py-3 font-semibold uppercase tracking-wide text-stone-800 ring-2 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 focus:ring-offset-2 disabled:cursor-not-allowed sm:px-6 sm:py-4";
+  const styles = {
+    primary: base + ' px-4 py-3 md:px-6 md:py-4',
+    small: base + ' px-3 py-1 text-sm',
+  };
 
-    if(to) 
-        return <Link className={className} to={to}>
-            {children}
-        </Link>
-    
+  if (to)
     return (
-        <button disabled={disabled} className= {className}>
-            {children}
-        </button>
-    )
+      <Link className={styles[type]} to={to}>
+        {children}
+      </Link>
+    );
+
+  return (
+    <button disabled={disabled} className={styles[type]}>
+      {children}
+    </button>
+  );
 }
 
-export default Button;  
- 
+export default Button;
