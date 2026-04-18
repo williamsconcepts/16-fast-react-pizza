@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Form, useActionData, useNavigation } from 'react-router-dom';
 import Button from '../../ui/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCart, getTotalCartPrice } from '../cart/cartSlice';
 import EmptyCart from '../cart/EmptyCart';
 import { formatCurrency } from '../../utils/helpers';
-import { use } from 'react';
+import { fetchAddress } from '../user/userSlice';
 
 const fakeCart = [
   {
@@ -38,6 +38,7 @@ function CreateOrder() {
   const isSubmitting = navigation.state === 'submitting';
 
   const formErrors = useActionData();
+  const dispatch = useDispatch();
 
   const cart = useSelector(getCart);
   const totalCartPrice = useSelector(getTotalCartPrice);
@@ -51,6 +52,8 @@ function CreateOrder() {
       <h2 className="mb-8 text-xl font-semibold">
         Ready to order? Let&apos;s go!
       </h2>
+
+      <button onClick={() => dispatch(fetchAddress())}>Get Position</button>
 
       {/* <Form method="POST" action="/order/new"> */}
       <Form method="POST">
